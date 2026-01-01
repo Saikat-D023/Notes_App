@@ -1,22 +1,25 @@
 ---
 
-# 📝 JotIt Down: A Simple Notes App
+##📝 JotIt Down: A Simple Notes App
+A lightweight full-stack Note-taking application built with Next.js. This project demonstrates the implementation of a RESTful API using Next.js Route Handlers to perform CRUD (Create, Read, Update, Delete) operations.
 
-A lightweight full-stack Note-taking application built with **Next.js**. This project demonstrates the implementation of a RESTful API using Next.js Route Handlers to perform CRUD (Create, Read, Update, Delete) operations.
+##🚀 Features
+View Notes: Fetch all saved notes from the database.
 
-## 🚀 Features
+Create Notes: Add new thoughts with a title and content.
 
-* **View Notes:** Fetch all saved notes from the database.
-* **Create Notes:** Add new thoughts with a title and content.
-* **Edit Notes:** Update existing notes in real-time.
-* **Delete Notes:** Remove notes you no longer need.
+Edit Notes: Update existing notes in real-time.
 
-## 🛠️ Tech Stack
+Delete Notes: Remove notes you no longer need.
 
-* **Framework:** Next.js 14+ (App Router)
-* **Language:** TypeScript / JavaScript
-* **Styling:** Tailwind CSS
-* **Database:** (e.g., MongoDB, PostgreSQL, or a local JSON array for testing)
+##🛠️ Tech Stack
+Framework: Next.js 14+ (App Router)
+
+Language: TypeScript / JavaScript
+
+Styling: Tailwind CSS
+
+Database: (e.g., MongoDB, PostgreSQL, or a local JSON array for testing)
 
 ---
 
