@@ -66,7 +66,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
         <div className="group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 via-zinc-900 to-black p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
           {/* Hover Glow */}
           <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-lime-500/10" />
           </div>
 
           {/* Header */}
@@ -86,7 +86,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
               placeholder="Note title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-2.5 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-2.5 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
 
             <textarea
@@ -94,14 +94,14 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={4}
-              className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-3 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-3 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
 
             <div className="flex justify-end pt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2.5 text-sm font-medium text-white shadow-md transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-2.5 text-sm font-medium text-white shadow-md transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? "Creating…" : "Create Note"}
               </button>
@@ -109,7 +109,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
           </form>
 
           {/* Bottom Accent */}
-          <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-green-500 via-emerald-500 to-lime-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
       </div>
 
@@ -140,7 +140,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
                   className="group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 via-zinc-900 to-black p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
                 >
                   <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-lime-500/10" />
                   </div>
 
                   <h3 className="relative mb-2 text-lg font-semibold text-zinc-100">
@@ -151,7 +151,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
                     {note.content}
                   </p>
 
-                  <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-green-500 via-emerald-500 to-lime-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
               );
             })}
