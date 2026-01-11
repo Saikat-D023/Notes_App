@@ -3,6 +3,7 @@ import connectToDB from "@/lib/db";
 import Note from "@/models/Notes";
 
 async function getNotes() {
+  await connectToDB();
   const notes = await Note.find({}).sort({ createdAt: -1 }).lean();
 
   return notes.map((x) => ({
