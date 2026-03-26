@@ -1,25 +1,9 @@
-import NotesClient from "@/components/NotesClient";
-import connectToDB from "@/lib/db";
-import Note from "@/models/schemaNotes";
-
-async function getNotes() {
-  await connectToDB();
-  const notes = await Note.find({}).sort({ createdAt: -1 }).lean();
-
-  return notes.map((x) => ({
-    ...x,
-    _id: x._id.toString(),
-    title: x.title,
-    content: x.content,
-  }));
-}
+import AddNotes from "@/components/AddNotes";
 
 export default async function Home() {
-  const notes = await getNotes();
-
   return (
    <>
-      <NotesClient initialNotes={notes} />
+      <AddNotes/>
    </>
   );
 }
