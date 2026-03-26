@@ -4,10 +4,11 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 interface Note {
-  id?: string;
-  _id?: string;
+  _id: string;
   title: string;
   content: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface NotesClientProps {
@@ -19,6 +20,10 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
   const createNote = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,9 +32,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
       toast.error("Title and content are required");
       return;
     }
-
     setLoading(true);
-
     try {
       const response = await fetch("/api/notes", {
         method: "POST",
@@ -51,6 +54,84 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const startEditing = (note: Note) => {
+    setEditingId(note._id);
+    setEditTitle(note.title);
+    setEditContent(note.content);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditTitle("");
+    setEditContent("");
+  };
+
+  const updateNote = async (noteId: string) => {
+    if (!editTitle.trim() || !editContent.trim()) {
+      toast.error("Title and content are required");
+      return;
+    }
+
+    setActionLoadingId(noteId);
+
+    try {
+      const response = await fetch(`/api/notes/${noteId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTitle,
+          content: editContent,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Failed to update note");
+      }
+
+      setNotes((prev) =>
+        prev.map((note) =>
+          note._id === noteId ? { ...note, ...result.data } : note
+        )
+      );
+      cancelEditing();
+      toast.success("Note updated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const deleteNote = async (noteId: string) => {
+    setActionLoadingId(noteId);
+
+    try {
+      const response = await fetch(`/api/notes/${noteId}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Failed to delete note");
+      }
+
+      setNotes((prev) => prev.filter((note) => note._id !== noteId));
+
+      if (editingId === noteId) {
+        cancelEditing();
+      }
+
+      toast.success("Note deleted");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -132,7 +213,9 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2">
             {notes.map((note) => {
-              const key = note.id ?? note._id;
+              const key = note._id;
+              const isEditing = editingId === key;
+              const isBusy = actionLoadingId === key;
 
               return (
                 <div
@@ -143,13 +226,69 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
                     <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-lime-500/10" />
                   </div>
 
-                  <h3 className="relative mb-2 text-lg font-semibold text-zinc-100">
-                    {note.title}
-                  </h3>
+                  {isEditing ? (
+                    <div className="relative space-y-3">
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="w-full rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-2.5 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                      <textarea
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        rows={4}
+                        className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900/60 px-4 py-3 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={cancelEditing}
+                          disabled={isBusy}
+                          className="rounded-xl border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => updateNote(key)}
+                          disabled={isBusy}
+                          className="rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {isBusy ? "Saving..." : "Save"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <h3 className="relative mb-2 text-lg font-semibold text-zinc-100">
+                        {note.title}
+                      </h3>
 
-                  <p className="relative text-sm text-zinc-400 line-clamp-4">
-                    {note.content}
-                  </p>
+                      <p className="relative text-sm text-zinc-400 line-clamp-4">
+                        {note.content}
+                      </p>
+
+                      <div className="relative mt-5 flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => startEditing(note)}
+                          disabled={isBusy}
+                          className="rounded-xl border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteNote(key)}
+                          disabled={isBusy}
+                          className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {isBusy ? "Deleting..." : "Delete"}
+                        </button>
+                      </div>
+                    </>
+                  )}
 
                   <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-green-500 via-emerald-500 to-lime-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>

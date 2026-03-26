@@ -1,6 +1,6 @@
 import NotesClient from "@/components/NotesClient";
 import connectToDB from "@/lib/db";
-import Note from "@/models/Notes";
+import Note from "@/models/schemaNotes";
 
 async function getNotes() {
   await connectToDB();
@@ -9,7 +9,6 @@ async function getNotes() {
   return notes.map((x) => ({
     ...x,
     _id: x._id.toString(),
-    id: x._id.toString(),
     title: x.title,
     content: x.content,
   }));
