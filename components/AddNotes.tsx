@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createNote } from "../app/action"
+import { useRouter } from "next/navigation";
 
   const noteSchema = z.object({
     title: z.string()
@@ -15,6 +16,7 @@ import { createNote } from "../app/action"
   }) 
 
   const AddNotes = () => {
+    const router = useRouter();
     const {
       register,
       handleSubmit,
@@ -32,7 +34,7 @@ import { createNote } from "../app/action"
         try {
           await createNote(data);
           reset();
-          alert("note added")
+          router.refresh();
         } catch (error) {
           console.log("Failed to add note:", error)
         }

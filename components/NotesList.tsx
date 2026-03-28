@@ -12,7 +12,12 @@ type NoteItem = {
 
 export default async function NotesList() {
   await connectToDB();
-  const notes = (await Note.find({}).sort({ createdAt: -1 }).lean()) as NoteItem[];
+  const rawNotes = await Note.find({}).sort({ createdAt: -1 }).lean();
+  const notes = rawNotes.map((note) => ({
+    _id: String(note._id),
+    title: note.title,
+    content: note.content,
+  })) as NoteItem[];
 
   if (notes.length === 0) {
     return <p className="m-5 text-lg">No notes saved yet.</p>;

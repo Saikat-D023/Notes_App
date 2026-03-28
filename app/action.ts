@@ -25,3 +25,21 @@ export async function deleteNote(_id: string) {
     await connectToDB();
     await Note.findByIdAndDelete(_id);
 }
+
+export async function updateNote(_id: string, data: Data) {
+    await connectToDB();
+    const note = await Note.findByIdAndUpdate(_id, {
+        title: data.title.trim(),
+        content: data.content.trim(),
+    }, { new: true });
+
+    if (!note) {
+        throw new Error("Note not found");
+    }
+
+    return {
+        id: note._id.toString(),
+        title: note.title,
+        content: note.content,
+    };
+}
